@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"demo-minio/config"
 
@@ -20,5 +21,12 @@ func main() {
 	}
 
 	ctx := context.Background()
-	minioClient.PutObject(ctx)
+	fileContent := []byte("Hello MiniO")
+	fileName := "photo/test.txt"
+	uploadInfo, err := minioClient.PutObject(ctx, cfg.MiniO().GetBucket(), fileName, bytes.NewReader(fileContent), int64(len(fileContent)), minio.PutObjectOptions{})
+	if err != nil {
+		logrus.Println("upload file failed:", err.Error())
+	}
+
+	logrus.Info("upload file success:", uploadInfo)
 }
